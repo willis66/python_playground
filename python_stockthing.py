@@ -12,8 +12,17 @@ def downloader():
 
 def parseer():
     with open(local_file, "r") as reader:
-        read_list = reader.readlines()
-        #print(read_list)
+        #Converting the file to a list, line 1 will be index 0, so on and so forth
+        all_lines = list(reader)
+        t = 0
+        for i, l in enumerate(all_lines):
+            line = all_lines[i - 1]
+            print(line)
+            t += 1
+            print(t)
+            if t > 20:
+                break
+            
 
 def main():
     downloader()
