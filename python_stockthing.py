@@ -1,3 +1,4 @@
+
 import requests
 #import pandas
 
@@ -29,10 +30,17 @@ def parseer():
                 line_list = content.split(",")
                 for i, l in enumerate(line_list):
                     #add dumb shit error handling
-                    main_dict.values[i].append(l)
+                    try:
+                        list(main_dict.values())[i].append(l)
+                    except:
+                        pass
 
 def cleanupstringfromlist(string):
     string = string.replace("\n", "")
+    string = string.replace(",0", "0")
+    #A lot of exceptions where dumbasses *cough* senators *cough* put in random commas, I've just added a try except: pass above as most dont matter to me
+    #string = string.replace(", ", "; ")
+    #string = string.replace(',"', "")
     return string
             
 
