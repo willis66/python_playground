@@ -2,6 +2,7 @@ import requests
 #import pandas
 
 local_file = "agg_data.csv"
+main_dict = {}
 
 def downloader():
     url = "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.csv"
@@ -15,13 +16,24 @@ def parseer():
         #Converting the file to a list, line 1 will be index 0, so on and so forth
         all_lines = list(reader)
         t = 0
-        for i, l in enumerate(all_lines):
-            line = all_lines[i - 1]
-            print(line)
-            t += 1
-            print(t)
-            if t > 20:
-                break
+        for line_num, content in enumerate(all_lines):
+            content = cleanupstringfromlist(content)
+            #print(line_num)
+            #print(content)
+            if line_num == 0:
+                #Takes the first line (which should contain keys) and converts it to a list which is placed inside a dictionary
+                line_list = content.split(",")
+                for i, l in enumerate(line_list):
+                    main_dict[l] = []
+            else:
+                line_list = content.split(",")
+                for i, l in enumerate(line_list):
+                    #add dumb shit error handling
+                    main_dict.values[i].append(l)
+
+def cleanupstringfromlist(string):
+    string = string.replace("\n", "")
+    return string
             
 
 def main():
@@ -29,3 +41,4 @@ def main():
     parseer()
 
 main()
+print(main_dict)
