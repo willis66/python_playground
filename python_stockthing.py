@@ -36,27 +36,33 @@ def parseer():
                         list(main_dict.values())[i].remove("")
                     except:
                         pass
+                        #it does throw errors/make mistakes often, but i don't care enough
 
 def cleanup_string_from_list(string):
     string = string.replace("\n", "")
-    string = string.replace(",0", "0")
+    string = string.replace(",0", "0")#cleaning up money
     string = string.replace("N/A", "")
     string = string.replace("--", "")
     #A lot of exceptions where dumbasses *cough* senators *cough* put in random commas, I've just added a try except: pass above as most dont matter to me
     #string = string.replace(", ", "; ")
     #string = string.replace(',"', "")
     return string
-            
-
-def main():
-    downloader()
-    parseer()
-    data_output()
-
 
 def data_output():
     #prob gonna make it output to a file for now
+    print(main_dict.keys())
+    counted_dict = collections.Counter(main_dict[input("what key: ")])
+    output_file = "output_file.txt"
+    with open(output_file, "w") as writer:
+        #use: counted_dict.items() for #alphabetical
+        for i in sorted(counted_dict, key=counted_dict.get, reverse=True):
+            #writer.write(i + str(l) + "\n") #alphabetical
+            writer.write(i + " : " + str(counted_dict[i]) + "\n")
+
+def main():
+    #should set up to run periodically
+    downloader()
+    parseer()#this one takes a while to run currently
+    data_output() 
 
 main()
-print(main_dict.keys())
-print(collections.Counter(main_dict[input("what key: ")]))
