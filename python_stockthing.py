@@ -1,11 +1,10 @@
 
 import requests
 import collections
-from datetime import datetime, timedelta
+from datetime import date, datetime
 
 local_file = "agg_data.csv"
 main_dict = {}
-days_back = 0
 
 def downloader():
     url = "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.csv"
@@ -63,14 +62,18 @@ def main():
     #downloader()
     #parseer()#this one takes a while to run currently
     #data_output() 
-    date_finder()
 
-def date_finder():#have to figure out how to accept dates in different formats
+def date_finder(in_date):
     #i dont want to spend that much time on this
-    current_date = datetime.now()
-    #print(current_date)
-    past_date = datetime.strftime(input("how far back do you want to go (yyyy-mm-dd): "), "%m/%d/%y")
-    days_back = current_date.date() - past_date.date()
-    print(days_back)
+    status = False
+    in_date = in_date.strftime("%m/%d/%Y")
+    current_date = date.today()
+    past_date = datetime.strptime(input("how far back do you want to go (yyyy-mm-dd): "), "%m/%d/%Y")
+    days_back = current_date - past_date.date()
+    days_calc = current_date - in_date
 
+    if days_calc <= days_back:
+        status = True
+
+    return status
 main()
