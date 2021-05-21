@@ -1,9 +1,11 @@
 
 import requests
 import collections
+from datetime import datetime, timedelta
 
 local_file = "agg_data.csv"
 main_dict = {}
+days_back = 0
 
 def downloader():
     url = "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.csv"
@@ -21,13 +23,12 @@ def parseer():
             content = cleanup_string_from_list(content)
             #print(line_num)
             #print(content)
+            #Takes the first line (which should contain keys) and converts it to a list which is placed inside a dictionary
+            line_list = content.split(",")
             if line_num == 0:
-                #Takes the first line (which should contain keys) and converts it to a list which is placed inside a dictionary
-                line_list = content.split(",")
                 for i, l in enumerate(line_list):
                     main_dict[l] = []
             else:
-                line_list = content.split(",")
                 for i, l in enumerate(line_list):
                     #add dumb shit error handling
                     try:
@@ -44,8 +45,6 @@ def cleanup_string_from_list(string):
     string = string.replace("N/A", "")
     string = string.replace("--", "")
     #A lot of exceptions where dumbasses *cough* senators *cough* put in random commas, I've just added a try except: pass above as most dont matter to me
-    #string = string.replace(", ", "; ")
-    #string = string.replace(',"', "")
     return string
 
 def data_output():
@@ -61,8 +60,17 @@ def data_output():
 
 def main():
     #should set up to run periodically
-    downloader()
-    parseer()#this one takes a while to run currently
-    data_output() 
+    #downloader()
+    #parseer()#this one takes a while to run currently
+    #data_output() 
+    date_finder()
+
+def date_finder():#have to figure out how to accept dates in different formats
+    #i dont want to spend that much time on this
+    current_date = datetime.now()
+    #print(current_date)
+    past_date = datetime.strftime(input("how far back do you want to go (yyyy-mm-dd): "), "%m/%d/%y")
+    days_back = current_date.date() - past_date.date()
+    print(days_back)
 
 main()
