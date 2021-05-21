@@ -5,6 +5,7 @@ from datetime import date, datetime
 
 local_file = "agg_data.csv"
 main_dict = {}
+past_date = datetime.strptime(input("how far back do you want to go (yyyy-mm-dd): "), "%m/%d/%Y")
 
 def downloader():
     url = "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.csv"
@@ -31,9 +32,10 @@ def parseer():
                 for i, l in enumerate(line_list):
                     #add dumb shit error handling
                     try:
-                        list(main_dict.values())[i].append(l)
-                        #Adding whatever then removing blank strings
-                        list(main_dict.values())[i].remove("")
+                        if date_finder(line_list[0]):#linenum[0] should be the date 
+                            list(main_dict.values())[i].append(l)
+                            #Adding whatever then removing blank strings
+                            list(main_dict.values())[i].remove("")
                     except:
                         pass
                         #it does throw errors/make mistakes often, but i don't care enough
@@ -59,21 +61,21 @@ def data_output():
 
 def main():
     #should set up to run periodically
-    #downloader()
-    #parseer()#this one takes a while to run currently
-    #data_output() 
+    downloader()
+    parseer()#this one takes a while to run currently
+    data_output() 
 
 def date_finder(in_date):
     #i dont want to spend that much time on this
     status = False
-    in_date = in_date.strftime("%m/%d/%Y")
+    in_date = datetime.strptime(in_date, "%m/%d/%Y")
     current_date = date.today()
-    past_date = datetime.strptime(input("how far back do you want to go (yyyy-mm-dd): "), "%m/%d/%Y")
     days_back = current_date - past_date.date()
-    days_calc = current_date - in_date
+    days_calc = current_date - in_date.date()
 
     if days_calc <= days_back:
         status = True
 
     return status
+
 main()
