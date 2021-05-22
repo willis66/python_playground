@@ -1,5 +1,6 @@
 #check for multiple reports of the same thing (ptr link should be unique)#not done
 #upgrading to csv reader#upgraded
+#incorporate house stock watcher: housestockwatcher.com
 import requests
 import collections
 from datetime import date, datetime
@@ -33,7 +34,7 @@ def parseer():
         for things in csv_dict:
             try:
                 if date_finder(things['transaction_date']) and is_ticker(things['ticker']):
-                    data_output(str(things) + '\n')
+                    data_output(things['owner'] + things['senator'] + '\n')
                     #print(things['ticker'])
             except:
                 pass
