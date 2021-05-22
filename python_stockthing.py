@@ -5,7 +5,12 @@ from datetime import date, datetime
 
 local_file = "agg_data.csv"
 main_dict = {}
-past_date = datetime.strptime(input("how far back do you want to go (yyyy-mm-dd): "), "%m/%d/%Y")
+while True:
+    try:
+        past_date = datetime.strptime(input("how far back do you want to go (mm/dd/yyyy): "), "%m/%d/%Y")
+        break
+    except:
+        print("real date please")
 
 def downloader():
     url = "https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.csv"
@@ -32,13 +37,15 @@ def parseer():
                 for i, l in enumerate(line_list):
                     #add dumb shit error handling
                     try:
-                        if date_finder(line_list[0]):#linenum[0] should be the date 
+                        if date_finder(line_list[0]) and is_ticker(line_list[2]):#line_list[0] should be the date and line_list[2] should be the ticker (HARDCODED)
+                            #These two take the longest:
                             list(main_dict.values())[i].append(l)
                             #Adding whatever then removing blank strings
                             list(main_dict.values())[i].remove("")
                     except:
                         pass
                         #it does throw errors/make mistakes often, but i don't care enough
+                        #limiting to ticker only (above) should lessen them
 
 def cleanup_string_from_list(string):
     string = string.replace("\n", "")
@@ -75,6 +82,13 @@ def date_finder(in_date):
 
     if days_calc <= days_back:
         status = True
+
+    return status
+
+def is_ticker(in_ticker):
+    status = True
+    if in_ticker == "N/A" or in_ticker == "--" or in_ticker == "":
+        status = False
 
     return status
 
