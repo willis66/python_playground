@@ -1,10 +1,17 @@
-
+#check for multiple reports of the same thing (ptr link should be unique)#not done
+#upgrading to csv reader#upgraded
 import requests
 import collections
 from datetime import date, datetime
+import csv
 
 local_file = "agg_data.csv"
 main_dict = {}
+
+output_file = "output_file.txt"
+with open(output_file, 'w') as clear:#clears output file
+    pass
+
 while True:
     try:
         past_date = datetime.strptime(input("how far back do you want to go (mm/dd/yyyy): "), "%m/%d/%Y")
@@ -20,57 +27,25 @@ def downloader():
         writer.write(down_file.content)
 
 def parseer():
-    with open(local_file, "r") as reader:
+    with open(local_file, "r") as file:
+        csv_dict = csv.DictReader(file)#, delimiter = ",", quotechar = '"'
         #Converting the file to a list, line 1 will be index 0, so on and so forth
-        all_lines = list(reader)
-        t = 0
-        for line_num, content in enumerate(all_lines):
-            content = cleanup_string_from_list(content)
-            #print(line_num)
-            #print(content)
-            #Takes the first line (which should contain keys) and converts it to a list which is placed inside a dictionary
-            line_list = content.split(",")
-            if line_num == 0:
-                for i, l in enumerate(line_list):
-                    main_dict[l] = []
-            else:
-                for i, l in enumerate(line_list):
-                    #add dumb shit error handling
-                    try:
-                        if date_finder(line_list[0]) and is_ticker(line_list[2]):#line_list[0] should be the date and line_list[2] should be the ticker (HARDCODED)
-                            #These two take the longest:
-                            list(main_dict.values())[i].append(l)
-                            #Adding whatever then removing blank strings
-                            list(main_dict.values())[i].remove("")
-                    except:
-                        pass
-                        #it does throw errors/make mistakes often, but i don't care enough
-                        #limiting to ticker only (above) should lessen them
+        for things in csv_dict:
+            try:
+                if date_finder(things['transaction_date']) and is_ticker(things['ticker']):
+                    data_output(str(things) + '\n')
+                    #print(things['ticker'])
+            except:
+                pass
 
-def cleanup_string_from_list(string):
-    string = string.replace("\n", "")
-    string = string.replace(",0", "0")#cleaning up money
-    string = string.replace("N/A", "")
-    string = string.replace("--", "")
-    #A lot of exceptions where dumbasses *cough* senators *cough* put in random commas, I've just added a try except: pass above as most dont matter to me
-    return string
-
-def data_output():
-    #prob gonna make it output to a file for now
-    print(main_dict.keys())
-    counted_dict = collections.Counter(main_dict[input("what key: ")])
-    output_file = "output_file.txt"
-    with open(output_file, "w") as writer:
-        #use: counted_dict.items() for #alphabetical
-        for i in sorted(counted_dict, key=counted_dict.get, reverse=True):
-            #writer.write(i + str(l) + "\n") #alphabetical
-            writer.write(i + " : " + str(counted_dict[i]) + "\n")
+def data_output(in_string):
+    with open(output_file, "a") as writer:
+        writer.write(in_string)
 
 def main():
     #should set up to run periodically
     downloader()
-    parseer()#this one takes a while to run currently
-    data_output() 
+    parseer()#this one takes a while to run currently #and would take a lot of extra work to forgo the commas
 
 def date_finder(in_date):
     #i dont want to spend that much time on this
