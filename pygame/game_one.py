@@ -7,16 +7,16 @@ screen_height = 480
 window = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Game One!")
 
-background = pygame.image.load('pygame\\bg.jpg')
-still = pygame.image.load('pygame\standing.png')
+background = pygame.image.load('bg.jpg')
+still = pygame.image.load('standing.png')
 
 clock = pygame.time.Clock()
 
 score = 0
 
 class Character():
-    walk_right = [pygame.image.load('pygame\R1.png'), pygame.image.load('pygame\R2.png'), pygame.image.load('pygame\R3.png'), pygame.image.load('pygame\R4.png'), pygame.image.load('pygame\R5.png'), pygame.image.load('pygame\R6.png'), pygame.image.load('pygame\R7.png'), pygame.image.load('pygame\R8.png'), pygame.image.load('pygame\R9.png')]
-    walk_left = [pygame.image.load('pygame\L1.png'), pygame.image.load('pygame\L2.png'), pygame.image.load('pygame\L3.png'), pygame.image.load('pygame\L4.png'), pygame.image.load('pygame\L5.png'), pygame.image.load('pygame\L6.png'), pygame.image.load('pygame\L7.png'), pygame.image.load('pygame\L8.png'), pygame.image.load('pygame\L9.png')]
+    walk_right = [pygame.image.load('R1.png'), pygame.image.load('R2.png'), pygame.image.load('R3.png'), pygame.image.load('R4.png'), pygame.image.load('R5.png'), pygame.image.load('R6.png'), pygame.image.load('R7.png'), pygame.image.load('R8.png'), pygame.image.load('R9.png')]
+    walk_left = [pygame.image.load('L1.png'), pygame.image.load('L2.png'), pygame.image.load('L3.png'), pygame.image.load('L4.png'), pygame.image.load('L5.png'), pygame.image.load('L6.png'), pygame.image.load('L7.png'), pygame.image.load('L8.png'), pygame.image.load('L9.png')]
 
     def __init__(self, x, y, width, height):
         self.x = x
@@ -54,8 +54,8 @@ class Character():
         #pygame.draw.rect(window, (255, 0, 0), self.hitbox, 1)#outline of hitbox
 
 class Enemy(Character):
-    walk_right = [pygame.image.load('pygame\R1E.png'), pygame.image.load('pygame\R2E.png'), pygame.image.load('pygame\R3E.png'), pygame.image.load('pygame\R4E.png'), pygame.image.load('pygame\R5E.png'), pygame.image.load('pygame\R6E.png'), pygame.image.load('pygame\R7E.png'), pygame.image.load('pygame\R8E.png'), pygame.image.load('pygame\R9E.png')]
-    walk_left = [pygame.image.load('pygame\L1E.png'), pygame.image.load('pygame\L2E.png'), pygame.image.load('pygame\L3E.png'), pygame.image.load('pygame\L4E.png'), pygame.image.load('pygame\L5E.png'), pygame.image.load('pygame\L6E.png'), pygame.image.load('pygame\L7E.png'), pygame.image.load('pygame\L8E.png'), pygame.image.load('pygame\L9E.png')]
+    walk_right = [pygame.image.load('R1E.png'), pygame.image.load('R2E.png'), pygame.image.load('R3E.png'), pygame.image.load('R4E.png'), pygame.image.load('R5E.png'), pygame.image.load('R6E.png'), pygame.image.load('R7E.png'), pygame.image.load('R8E.png'), pygame.image.load('R9E.png')]
+    walk_left = [pygame.image.load('L1E.png'), pygame.image.load('L2E.png'), pygame.image.load('L3E.png'), pygame.image.load('L4E.png'), pygame.image.load('L5E.png'), pygame.image.load('L6E.png'), pygame.image.load('L7E.png'), pygame.image.load('L8E.png'), pygame.image.load('L9E.png')]
     standing = False
 
     def __init__(self, x, y, width, height, end):
