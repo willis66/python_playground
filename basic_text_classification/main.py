@@ -10,28 +10,6 @@ import string
 
 import tensorflow as tf
 
-<<<<<<< HEAD
-""" from tensorflow.keras import layers
-from tensorflow.keras import losses """
-
-print("Tensorflow version: {}".format(tf.__version__))
-
-url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
-
-""" dataset = tf.keras.utils.get_file(
-    "aclImdb_v1", url, untar=True, cache_dir=".", cache_subdir=""
-) """
-
-dataset = "./aclImdb"
-print(type(dataset))
-dataset_dir = os.path.join(os.path.dirname(dataset), "aclImdb")
-
-print(os.listdir(dataset_dir))
-
-train_dir = os.path.join(dataset_dir, "train")
-print(os.listdir(train_dir))
-
-=======
 print("Tensorflow version: {}".format(tf.__version__))
 
 # Using regex (or at least Tensorflow's implementation of it) to prase the strings and remove break statements, punctuation, and convert all to lowercase
@@ -63,16 +41,11 @@ dataset_dir = os.path.join(os.path.dirname(dataset), "aclImdb")
 train_dir = os.path.join(dataset_dir, "train")
 
 # Checking out the contents of a sample file
->>>>>>> 40196d94baca4688fd26dd8f2b1d8d193ada24af
 sample_file = os.path.join(train_dir, "pos/1181_9.txt")
 with open(sample_file) as f:
     print(f.read())
 
-<<<<<<< HEAD
-
-=======
 # Removing this directory because Tensorflow's text_dataset_from_directory fuction is based on the directories
->>>>>>> 40196d94baca4688fd26dd8f2b1d8d193ada24af
 try:
     remove_dir = os.path.join(train_dir, "unsup")
     shutil.rmtree(remove_dir)
@@ -80,17 +53,11 @@ try:
 except FileNotFoundError:
     print("File no longer exists.")
 
-<<<<<<< HEAD
-batch_size = 32
-seed = 42
-
-=======
 # Set here because they're used for each dataset
 batch_size = 32
 seed = 42
 
 # Using Tensorflow's function to grab a dataset from each directory. Training dataset split into training and validation
->>>>>>> 40196d94baca4688fd26dd8f2b1d8d193ada24af
 raw_train_ds = tf.keras.utils.text_dataset_from_directory(
     "aclImdb/train",
     batch_size=batch_size,
@@ -111,22 +78,12 @@ raw_test_ds = tf.keras.utils.text_dataset_from_directory(
     "aclImdb/test", batch_size=batch_size
 )
 
-<<<<<<< HEAD
-# Load the dataset
-
-=======
 # Grabbing the first batch, and printing the first three reviews and labels.
->>>>>>> 40196d94baca4688fd26dd8f2b1d8d193ada24af
 for text_batch, label_batch in raw_train_ds.take(1):
     for i in range(3):
         print("Review:", text_batch.numpy()[i])
         print("Label:", label_batch.numpy()[i])
 
-<<<<<<< HEAD
-print("Label 0 corresponds to", raw_train_ds.class_names[0])
-print("Label 1 corresponds to", raw_train_ds.class_names[1])
-
-=======
 # Printing out label correspondance. From the names of the directory
 print("Label 0 corresponds to", raw_train_ds.class_names[0])
 print("Label 1 corresponds to", raw_train_ds.class_names[1])
@@ -257,4 +214,3 @@ examples = [
 ]
 print(export_model.predict(examples))
 
->>>>>>> 40196d94baca4688fd26dd8f2b1d8d193ada24af
