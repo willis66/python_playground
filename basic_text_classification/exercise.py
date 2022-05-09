@@ -27,31 +27,19 @@ def vectorize_text(text, label):
     return vectorize_layer(text), label
 
 
-# Grabbing the dataset using a function of Tensorflow's
-url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+# For some reason this dataset is in the root compressed directory. By specifying a sub-directory we can extract the files there and keep our workspace neater.
+url = "https://storage.googleapis.com/download.tensorflow.org/data/stack_overflow_16k.tar.gz"
 dataset = tf.keras.utils.get_file(
-    "aclImdb_v1", url, untar=True, cache_dir=".", cache_subdir=""
+    None, url, untar=True, cache_dir=".", cache_subdir="so_data"
 )
 
-# Now that the dataset's been downloaded, using OS based function to navigate to its location
-dataset = "./aclImdb"
-print(type(dataset))
-
-dataset_dir = os.path.join(os.path.dirname(dataset), "aclImdb")
+dataset_dir = os.path.dirname(dataset)
 train_dir = os.path.join(dataset_dir, "train")
 
 # Checking out the contents of a sample file
-sample_file = os.path.join(train_dir, "pos/1181_9.txt")
+sample_file = os.path.join(train_dir, "csharp/9.txt")
 with open(sample_file) as f:
     print(f.read())
-
-# Removing this directory because Tensorflow's text_dataset_from_directory fuction is based on the directories
-try:
-    remove_dir = os.path.join(train_dir, "unsup")
-    shutil.rmtree(remove_dir)
-    print("File removed.")
-except FileNotFoundError:
-    print("File no longer exists.")
 
 # Set here because they're used for each dataset
 batch_size = 32
@@ -59,7 +47,7 @@ seed = 42
 
 # Using Tensorflow's function to grab a dataset from each directory. Training dataset split into training and validation
 raw_train_ds = tf.keras.utils.text_dataset_from_directory(
-    "aclImdb/train",
+    "so_data/train",
     batch_size=batch_size,
     validation_split=0.2,
     subset="training",
@@ -67,7 +55,7 @@ raw_train_ds = tf.keras.utils.text_dataset_from_directory(
 )
 
 raw_val_ds = tf.keras.utils.text_dataset_from_directory(
-    "aclImdb/train",
+    "so_data/train",
     batch_size=batch_size,
     validation_split=0.2,
     subset="validation",
@@ -75,18 +63,14 @@ raw_val_ds = tf.keras.utils.text_dataset_from_directory(
 )
 
 raw_test_ds = tf.keras.utils.text_dataset_from_directory(
-    "aclImdb/test", batch_size=batch_size
+    "so_data/test", batch_size=batch_size
 )
-
-# Grabbing the first batch, and printing the first three reviews and labels.
-for text_batch, label_batch in raw_train_ds.take(1):
-    for i in range(3):
-        print("Review:", text_batch.numpy()[i])
-        print("Label:", label_batch.numpy()[i])
 
 # Printing out label correspondance. From the names of the directory
 print("Label 0 corresponds to", raw_train_ds.class_names[0])
 print("Label 1 corresponds to", raw_train_ds.class_names[1])
+print("Label 2 corresponds to", raw_train_ds.class_names[2])
+print("Label 3 corresponds to", raw_train_ds.class_names[3])
 
 # Variables used in vectorization
 sequence_length = 300
@@ -140,16 +124,16 @@ model = tf.keras.Sequential(
         tf.keras.layers.GlobalAveragePooling1D(),
         tf.keras.layers.Dropout(0.2),
         # Last layer densely connected to a singular output node
-        tf.keras.layers.Dense(1),
+        tf.keras.layers.Dense(4),
     ]
 )
 print(model.summary())
 
 # Setting optimizer and loss functions
 model.compile(
-    loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     optimizer="adam",
-    metrics=tf.metrics.BinaryAccuracy(threshold=0.0),
+    metrics=["accuracy"],
 )
 
 # model.fit returns a history object that contains a dictionary with everything that happened during training.
@@ -166,8 +150,8 @@ history_dict = history.history
 print(history_dict.keys())
 
 # Grabbing the information from the dictionary
-acc = history_dict["binary_accuracy"]
-val_acc = history_dict["val_binary_accuracy"]
+acc = history_dict["accuracy"]
+val_acc = history_dict["val_accuracy"]
 loss = history_dict["loss"]
 val_loss = history_dict["val_loss"]
 
@@ -199,7 +183,7 @@ export_model = tf.keras.Sequential(
 )
 
 export_model.compile(
-    loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     optimizer="adam",
     metrics=["accuracy"],
 )
@@ -207,10 +191,10 @@ export_model.compile(
 loss, accuracy = export_model.evaluate(raw_test_ds)
 print(accuracy)
 
-examples = [
+""" examples = [
     "The movie was great!",
     "The movie was okay.",
     "The movie was terrible...",
 ]
-print(export_model.predict(examples))
+print(export_model.predict(examples)) """
 
